@@ -11,39 +11,36 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-name: e2e-kind-decomission
+#
+# This workflow tests that we can stand up a CRDB cluster with the operator and execute SQL in the cluster. It uses the
+# steps that are outlined in our public docs to ensure that the flow we're recommending always works.
+name: Nightly Smoketest
 
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
-  push:
-    branches: [ master ]
-    paths-ignore:
-      - "**.md"
-      - "docs/**"
-  pull_request:
-    branches: [ master ]
-    paths-ignore:
-      - "**.md"
-      - "docs/**"
+  schedule:
+    # runs at 3am UTC Mon-Fri
+    # ref: <min> <hr> <month-day> <month> <weekday>
+    - cron: '0 3 * * 1-5'
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+  # allows running from the actions tab in GitHub
+  workflow_dispatch: ~
 
 jobs:
-  e2e-kind-decomission:
+  smoketest:
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
       matrix:
-        bazel: ["4.0.0"]
+        # supported Kubenetes versions
+        NODE_VERSION: [1.18.19, 1.19.11, 1.20.7, 1.21.2, 1.22.1]
     steps:
       - uses: actions/checkout@v2
 
       - name: Setup Bazel
         uses: abhinavsingh/setup-bazel@v3
         with:
-          version: ${{ matrix.bazel }}
+          version: 4.2.1
 
-      - name: End-to-end (kind)
-        run: make test/e2e/kind-decomission
+      - name: Bank Workload
+        env:
+          NODE_VERSION: ${{ matrix.NODE_VERSION }}
+        run: make test/smoketest

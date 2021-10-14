@@ -23,7 +23,7 @@ OpenShift Nightly: [![OpenShift Nightly](https://teamcity.cockroachdb.com/guestA
 
 ## Prerequisites
 
-- Kubernetes 1.15 or higher (1.18 is recommended)
+- Kubernetes 1.18 or higher
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 - A GKE cluster (`n2-standard-4` is the minimum requirement for testing)
 
@@ -32,13 +32,13 @@ OpenShift Nightly: [![OpenShift Nightly](https://teamcity.cockroachdb.com/guestA
 Apply the custom resource definition (CRD) for the Operator:
 
 ```
-kubectl apply -f https://raw.githubusercontent.com/cockroachdb/cockroach-operator/master/config/crd/bases/crdb.cockroachlabs.com_crdbclusters.yaml
+kubectl apply -f https://raw.githubusercontent.com/cockroachdb/cockroach-operator/master/install/crds.yaml
 ```
 
 Apply the Operator manifest. By default, the Operator is configured to install in the `default` namespace. To use the Operator in a custom namespace, download the Operator manifest and edit all instances of `namespace: default` to specify your custom namespace. Then apply this version of the manifest to the cluster with `kubectl apply -f {local-file-path}` instead of using the command below.
 
 ```
-kubectl apply -f https://raw.githubusercontent.com/cockroachdb/cockroach-operator/master/manifests/operator.yaml
+kubectl apply -f https://raw.githubusercontent.com/cockroachdb/cockroach-operator/master/install/operator.yaml
 ```
 
 > **Note:** The Operator can only install CockroachDB into its own namespace. 
